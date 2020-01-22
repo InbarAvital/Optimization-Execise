@@ -329,16 +329,30 @@ void smooth2(int dim, pixel *src, pixel *dst)
     initialize_pixel_sum(&sum);
     for (i = 0; i < dim; i++){
     	p=i*dim;
+    	initialize_pixel_sum(&col1);
+    	initialize_pixel_sum(&col2);
+    	initialize_pixel_sum(&col3);
 		for (j = 0; j < dim; j++){
 			k = p+j;
+			
+			//row 1
 			if(i-1>=0){
     			if (j-1 >= 0)
     			{
-    				accumulate_sum(&col1, src[k-dim-1]);
+    				if (col2.num == 0)
+    				{	
+    					accumulate_sum(&col1, src[k-dim-1]);
+    				} else{
+    					col1 = col2;
+    				}
     			}
-	
-    			accumulate_sum(&col2, src[k-dim]);
-    		
+				if (col3.num == 0)
+    				{	
+    					accumulate_sum(&col2, src[k-dim]);
+    				} else{
+    					col2 = col3;
+    				}
+    			
     			if (j+1< dim)
     			{
     				accumulate_sum(&col3, src[k-dim+1]);
@@ -346,25 +360,54 @@ void smooth2(int dim, pixel *src, pixel *dst)
     			}
     		}
 
+
+
+    		//row 2
 			if (j-1 >= 0)
     		{
-    			accumulate_sum(&col1, src[k-1]);
+    			if (col2.num == 0)
+    			{	
+    				accumulate_sum(&col1, src[k-1]);
+    			} else{
+    				col1 = col2;
+    			}
+    			
     		}
 
-    		accumulate_sum(&col2, src[k]);
+
+    		if (col3.num == 0)
+    		{	
+    			accumulate_sum(&col2, src[k]);
+    		} else{
+    			col2 = col3;
+    		}
 
     		if (j+1< dim)
     		{
     			accumulate_sum(&col3, src[k+1]);
     		}
+
+
+    		// row 3
     		if(i+1<dim){
     			
     			if (j-1 >= 0)
     			{
-    				accumulate_sum(&col1, src[k+dim-1]);
+    				if (col2.num == 0)
+    				{	
+    					accumulate_sum(&col1, src[k+dim-1]);
+    				} else{
+    					col1 = col2;
+    				}
+    				
     			}
-	
-    			accumulate_sum(&col2, src[k+dim]);
+				if (col3.num == 0)
+    			{	
+    				accumulate_sum(&col2, src[k+dim]);
+    			} else{
+    				col2 = col3;
+    			}
+    			
     		
     			if (j+1< dim)
     			{
