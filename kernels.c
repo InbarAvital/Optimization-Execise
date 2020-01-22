@@ -76,30 +76,80 @@ char rotate3_descr[] = "rotate3: test3";
 void rotate3(int dim, pixel *src, pixel *dst) 
 {
    
-	int i, j,p,k;
-	p = (dim - 1)*dim;
-    for (i = 0; i < dim; i+= 16){
-    	k = p;
-    	for (j = 0; j < dim; j+= 1){
-		dst[k] = src[RIDX(i, j, dim)];
-		dst[k+1] = src[RIDX(i+1, j, dim)];
-		dst[k+2] = src[RIDX(i+2, j, dim)];
-		dst[k+3] = src[RIDX(i+3, j, dim)];
-		dst[k+4] = src[RIDX(i+4, j, dim)];
-		dst[k+5] = src[RIDX(i+5, j, dim)];
-		dst[k+6] = src[RIDX(i+6, j, dim)];
-		dst[k+7] = src[RIDX(i+7, j, dim)];
-		dst[k+8] = src[RIDX(i+8, j, dim)];
-		dst[k+9] = src[RIDX(i+9, j, dim)];
-		dst[k+10] = src[RIDX(i+10, j, dim)];
-		dst[k+11] = src[RIDX(i+11, j, dim)];
-		dst[k+12] = src[RIDX(i+12, j, dim)];
-		dst[k+13] = src[RIDX(i+13, j, dim)];
-		dst[k+14] = src[RIDX(i+14, j, dim)];
-		dst[k+15] = src[RIDX(i+15, j, dim)];
-		k -= dim;
-		}
-		p += 16;
+    int i, j, p, k, x;
+    p = (dim - 1)*dim;
+    for (i = 0; i < dim; i+= BLOCK_SIZE){
+        k = p;
+        x = dim * i;
+        for (j = 0; j < dim; j+= 1){
+            x += j;
+            dst[k] = src[x];
+            x+=dim;
+            dst[k+1] = src[x];
+            x+=dim;
+            dst[k+2] = src[x];
+            x+=dim;
+            dst[k+3] = src[x];
+            x+=dim;
+            dst[k+4] = src[x];
+            x+=dim;
+            dst[k+5] = src[x];
+            x+=dim;
+            dst[k+6] = src[x];
+            x+=dim;
+            dst[k+7] = src[x];
+            x+=dim;
+            dst[k+8] = src[x];
+            x+=dim;
+            dst[k+9] = src[x];
+            x+=dim;
+            dst[k+10] = src[x];
+            x+=dim;
+            dst[k+11] = src[x];
+            x+=dim;
+            dst[k+12] = src[x];
+            x+=dim;
+            dst[k+13] = src[x];
+            x+=dim;
+            dst[k+14] = src[x];
+            x+=dim;
+            dst[k+15] = src[x];
+            x+=dim;
+            dst[k+16] = src[x];
+            x+=dim;
+            dst[k+17] = src[x];
+            x+=dim;
+            dst[k+18] = src[x];
+            x+=dim;
+            dst[k+19] = src[x];
+            x+=dim;
+            dst[k+20] = src[x];
+            x+=dim;
+            dst[k+21] = src[x];
+            x+=dim;
+            dst[k+22] = src[x];
+            x+=dim;
+            dst[k+23] = src[x];
+            x+=dim;
+            dst[k+24] = src[x];
+            x+=dim;
+            dst[k+25] = src[x];
+            x+=dim;
+            dst[k+26] = src[x];
+            x+=dim;
+            dst[k+27] = src[x];
+            x+=dim;
+            dst[k+28] = src[x];
+            x+=dim;
+            dst[k+29] = src[x];
+            x+=dim;
+            dst[k+30] = src[x];
+            x+=dim;
+            dst[k+31] = src[x];
+            x -= j + dim*31;
+            k -= dim;
+        }
+        p += BLOCK_SIZE;
     }
 }
 char rotate4_descr[] = "rotate4: test4";
