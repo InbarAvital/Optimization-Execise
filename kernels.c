@@ -31,7 +31,7 @@ team_t team = {
  * Your different versions of the rotate kernel go here
  ******************************************************/
 
-/* 
+/*                       
  * naive_rotate - The naive baseline version of rotate 
  */
 char naive_rotate_descr[] = "naive_rotate: Naive baseline implementation";
