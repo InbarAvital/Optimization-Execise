@@ -282,7 +282,7 @@ static pixel avg(int dim, int i, int j, pixel *src)
 /******************************************************
  * Your different versions of the smooth kernel go here
  ******************************************************/
-static void sun_coloums(pixel_sum *sum, pixel_sum *col1,pixel_sum *col2,pixel_sum *col3) 
+static void sum_coloums(pixel_sum *sum, pixel_sum *col1,pixel_sum *col2,pixel_sum *col3) 
 {
     sum->red = (int) col1->red+col2->red+col3->red;
     sum->green = (int) col1->green+col2->green+col3->green;
@@ -368,107 +368,94 @@ char smooth2_descr[] = "smooth2";
 void smooth2(int dim, pixel *src, pixel *dst) 
 {
 
-	int i, j, p,k;
-    pixel_sum col1;
-    pixel_sum col2;
-    pixel_sum col3;
-    pixel_sum sum;
+	int i=0, j;
+    pixel_sum col1, col2,col3,sum;
     initialize_pixel_sum(&col1);
     initialize_pixel_sum(&col2);
     initialize_pixel_sum(&col3);
     initialize_pixel_sum(&sum);
-    for (i = 0; i < dim; i++){
-    	p=i*dim;
-    	initialize_pixel_sum(&col1);
-    	initialize_pixel_sum(&col2);
-    	initialize_pixel_sum(&col3);
-		for (j = 0; j < dim; j++){
-			k = p+j;
-			
-			//row 1
-			if(i-1>=0){
-    			if (j-1 >= 0)
-    			{
-    				if (col2.num == 0)
-    				{	
-    					accumulate_sum(&col1, src[k-dim-1]);
-    				} else{
-    					col1 = col2;
-    				}
-    			}
-				if (col3.num == 0)
-    				{	
-    					accumulate_sum(&col2, src[k-dim]);
-    				} else{
-    					col2 = col3;
-    				}
-    			
-    			if (j+1< dim)
-    			{
-    				accumulate_sum(&col3, src[k-dim+1]);
-
-    			}
-    		}
+	//
 
 
+    initialize_pixel_sum(&col1);
+	accumulate_sum(&col2, src[RIDX(0, 0, dim)]);
+	accumulate_sum(&col2, src[RIDX(1, 0, dim)]);
+	accumulate_sum(&col3, src[RIDX(0, 1, dim)]);
+	accumulate_sum(&col3, src[RIDX(1, 1, dim)]);
 
-    		//row 2
-			if (j-1 >= 0)
-    		{
-    			if (col2.num == 0)
-    			{	
-    				accumulate_sum(&col1, src[k-1]);
-    			} else{
-    				col1 = col2;
-    			}
-    			
-    		}
-
-
-    		if (col3.num == 0)
-    		{	
-    			accumulate_sum(&col2, src[k]);
-    		} else{
-    			col2 = col3;
-    		}
-
-    		if (j+1< dim)
-    		{
-    			accumulate_sum(&col3, src[k+1]);
-    		}
-
-
-    		// row 3
-    		if(i+1<dim){
-    			
-    			if (j-1 >= 0)
-    			{
-    				if (col2.num == 0)
-    				{	
-    					accumulate_sum(&col1, src[k+dim-1]);
-    				} else{
-    					col1 = col2;
-    				}
-    				
-    			}
-				if (col3.num == 0)
-    			{	
-    				accumulate_sum(&col2, src[k+dim]);
-    			} else{
-    				col2 = col3;
-    			}
-    			
-    		
-    			if (j+1< dim)
-    			{
-    				accumulate_sum(&col3, src[k+dim+1]);
-    			}
-    		}
-    		sun_coloums(&sum,&col1,&col2,&col3);
-    		assign_sum_to_pixel(&dst[k], sum);
+    for (j = 0; j < dim-2; j++){
+			sum_coloums(&sum, &col1,&col2,&col3);
+			assign_sum_to_pixel(&dst[RIDX(0, j, dim)], sum);
     		initialize_pixel_sum(&sum);
+    		col1 = col2;
+    		col2 = col3;
+    		initialize_pixel_sum(&col3);
+			accumulate_sum(&col3, src[RIDX(0, j+2, dim)]);
+			accumulate_sum(&col3, src[RIDX(1, j+2, dim)]);
 		}
+		sum_coloums(&sum, &col1,&col2,&col3);
+		assign_sum_to_pixel(&dst[dim-2], sum);
+		initialize_pixel_sum(&sum);
+		initialize_pixel_sum(&col1);
+		sum_coloums(&sum, &col1,&col2,&col3);
+		assign_sum_to_pixel(&dst[dim-1], sum);
+
+	//
+	for (i = 1; i < dim-1; i++){
+
+		initialize_pixel_sum(&col1);
+		accumulate_sum(&col2, src[RIDX(i-1, 0, dim)]);
+		accumulate_sum(&col2, src[RIDX(i, 0, dim)]);
+		accumulate_sum(&col2, src[RIDX(i+1, 0, dim)]);
+		accumulate_sum(&col3, src[RIDX(i-1, 1, dim)]);
+		accumulate_sum(&col3, src[RIDX(i, 1, dim)]);
+		accumulate_sum(&col3, src[RIDX(i+1, 1, dim)]);
+
+		for (j = 0; j < dim-2; j++){
+			sum_coloums(&sum, &col1,&col2,&col3);
+			assign_sum_to_pixel(&dst[RIDX(i, j, dim)], sum);
+    		initialize_pixel_sum(&sum);
+    		col1 = col2;
+    		col2 = col3;
+    		initialize_pixel_sum(&col3);
+    		accumulate_sum(&col3, src[RIDX(i-1, j+2, dim)]);
+			accumulate_sum(&col3, src[RIDX(i, j+2, dim)]);
+			accumulate_sum(&col3, src[RIDX(i+1, j+2, dim)]);
+		}
+		sum_coloums(&sum, &col1,&col2,&col3);
+		assign_sum_to_pixel(&dst[RIDX(i, dim-2, dim)], sum);
+		initialize_pixel_sum(&sum);
+		initialize_pixel_sum(&col1);
+		sum_coloums(&sum, &col1,&col2,&col3);
+		assign_sum_to_pixel(&dst[RIDX(i, dim-1, dim)], sum);
 	}
+	//
+
+
+initialize_pixel_sum(&col1);
+	accumulate_sum(&col2, src[RIDX(dim-2, 0, dim)]);
+	accumulate_sum(&col2, src[RIDX(dim-1, 0, dim)]);
+	accumulate_sum(&col3, src[RIDX(dim-2, 1, dim)]);
+	accumulate_sum(&col3, src[RIDX(dim-1, 1, dim)]);
+
+    for (j = 0; j < dim-2; j++){
+			sum_coloums(&sum, &col1,&col2,&col3);
+			assign_sum_to_pixel(&dst[RIDX(dim-1, j, dim)], sum);
+    		initialize_pixel_sum(&sum);
+    		col1 = col2;
+    		col2 = col3;
+    		initialize_pixel_sum(&col3);
+			accumulate_sum(&col3, src[RIDX(dim-2, j+2, dim)]);
+			accumulate_sum(&col3, src[RIDX(dim-1, j+2, dim)]);
+		}
+		sum_coloums(&sum, &col1,&col2,&col3);
+		assign_sum_to_pixel(&dst[RIDX(dim-1, dim-2, dim)], sum);
+		initialize_pixel_sum(&sum);
+		initialize_pixel_sum(&col1);
+		sum_coloums(&sum, &col1,&col2,&col3);
+		assign_sum_to_pixel(&dst[RIDX(dim-1, dim-1, dim)], sum);
+
+	//
 }
 /*
  * smooth - Your current working version of smooth. 
@@ -477,7 +464,7 @@ void smooth2(int dim, pixel *src, pixel *dst)
 char smooth_descr[] = "smooth: Current working version";
 void smooth(int dim, pixel *src, pixel *dst) 
 {
-    naive_smooth(dim, src, dst);
+    smooth1(dim, src, dst);
 }
 
 
@@ -490,7 +477,7 @@ void smooth(int dim, pixel *src, pixel *dst)
  *********************************************************************/
 
 void register_smooth_functions() {
-    //add_smooth_function(&smooth, smooth_descr);
+    add_smooth_function(&smooth, smooth_descr);
     add_smooth_function(&naive_smooth, naive_smooth_descr);
     /* ... Register additional test functions here */
     add_smooth_function(&smooth1, smooth1_descr);
