@@ -368,7 +368,7 @@ char smooth2_descr[] = "smooth2";
 void smooth2(int dim, pixel *src, pixel *dst) 
 {
 
-	int i=0, j;
+	int i=0, j,ip,im,k;
     pixel_sum col1, col2,col3,sum;
     initialize_pixel_sum(&col1);
     initialize_pixel_sum(&col2);
@@ -376,13 +376,11 @@ void smooth2(int dim, pixel *src, pixel *dst)
     initialize_pixel_sum(&sum);
 	//
 
-
     initialize_pixel_sum(&col1);
 	accumulate_sum(&col2, src[RIDX(0, 0, dim)]);
 	accumulate_sum(&col2, src[RIDX(1, 0, dim)]);
 	accumulate_sum(&col3, src[RIDX(0, 1, dim)]);
 	accumulate_sum(&col3, src[RIDX(1, 1, dim)]);
-
     for (j = 0; j < dim-2; j++){
 			sum_coloums(&sum, &col1,&col2,&col3);
 			assign_sum_to_pixel(&dst[RIDX(0, j, dim)], sum);
@@ -402,14 +400,18 @@ void smooth2(int dim, pixel *src, pixel *dst)
 
 	//
 	for (i = 1; i < dim-1; i++){
-
+		ip = i+1;
+		im = i-1;
+		k;
 		initialize_pixel_sum(&col1);
-		accumulate_sum(&col2, src[RIDX(i-1, 0, dim)]);
+		initialize_pixel_sum(&col2);
+		initialize_pixel_sum(&col3);
+		accumulate_sum(&col2, src[RIDX(im, 0, dim)]);
 		accumulate_sum(&col2, src[RIDX(i, 0, dim)]);
-		accumulate_sum(&col2, src[RIDX(i+1, 0, dim)]);
-		accumulate_sum(&col3, src[RIDX(i-1, 1, dim)]);
+		accumulate_sum(&col2, src[RIDX(ip, 0, dim)]);
+		accumulate_sum(&col3, src[RIDX(im, 1, dim)]);
 		accumulate_sum(&col3, src[RIDX(i, 1, dim)]);
-		accumulate_sum(&col3, src[RIDX(i+1, 1, dim)]);
+		accumulate_sum(&col3, src[RIDX(ip, 1, dim)]);
 
 		for (j = 0; j < dim-2; j++){
 			sum_coloums(&sum, &col1,&col2,&col3);
@@ -418,9 +420,9 @@ void smooth2(int dim, pixel *src, pixel *dst)
     		col1 = col2;
     		col2 = col3;
     		initialize_pixel_sum(&col3);
-    		accumulate_sum(&col3, src[RIDX(i-1, j+2, dim)]);
+    		accumulate_sum(&col3, src[RIDX(im, j+2, dim)]);
 			accumulate_sum(&col3, src[RIDX(i, j+2, dim)]);
-			accumulate_sum(&col3, src[RIDX(i+1, j+2, dim)]);
+			accumulate_sum(&col3, src[RIDX(ip, j+2, dim)]);
 		}
 		sum_coloums(&sum, &col1,&col2,&col3);
 		assign_sum_to_pixel(&dst[RIDX(i, dim-2, dim)], sum);
@@ -432,7 +434,9 @@ void smooth2(int dim, pixel *src, pixel *dst)
 	//
 
 
-initialize_pixel_sum(&col1);
+	initialize_pixel_sum(&col1);
+	initialize_pixel_sum(&col2);
+	initialize_pixel_sum(&col3);
 	accumulate_sum(&col2, src[RIDX(dim-2, 0, dim)]);
 	accumulate_sum(&col2, src[RIDX(dim-1, 0, dim)]);
 	accumulate_sum(&col3, src[RIDX(dim-2, 1, dim)]);
@@ -464,7 +468,7 @@ initialize_pixel_sum(&col1);
 char smooth_descr[] = "smooth: Current working version";
 void smooth(int dim, pixel *src, pixel *dst) 
 {
-    smooth1(dim, src, dst);
+    smooth2(dim, src, dst);
 }
 
 
