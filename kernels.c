@@ -368,7 +368,7 @@ char smooth2_descr[] = "smooth2";
 void smooth2(int dim, pixel *src, pixel *dst)
 {
 
-    int i=0, j, iip, iim, k, im;
+    int i=0, j, iip, iim, im;
     pixel_sum col1, col2,col3,sum;
     initialize_pixel_sum(&col1);
     initialize_pixel_sum(&col2);
@@ -461,6 +461,309 @@ void smooth2(int dim, pixel *src, pixel *dst)
 
     //
 }
+char smooth3_descr[] = "smooth3";
+void smooth3(int dim, pixel *src, pixel *dst)
+{
+
+    int i=0, j, iip, iim, k, im,p,x,y,z;
+    int col1 =0, col2 = 0,col3 = 0 ,sum;
+    //red
+
+    col2 = src[0].red;
+    col3 = src[1].red;
+    col2 += src[dim].red;
+    col3 += src[dim+1].red;
+    sum = col2 + col3;
+    dst[0].red = sum/4;
+    x=dim+1;
+    for (j = 1; j < dim-1; j++){
+        col1 = col2;
+        col2 = col3;
+        col3 = src[j+1].red;
+        col3 += src[x+j].red;
+        sum = col1 + col2 + col3;
+        dst[j].red = sum/6;
+        j++;
+        col1 = col2;
+        col2 = col3;
+        col3 = src[j+1].red;
+        col3 += src[x+j].red;
+        sum = col1 + col2 + col3;
+        dst[j].red = sum/6;
+    }
+    col1 = col2;
+    col2 = col3;
+    sum = col1 + col2;
+    dst[dim-1].red = sum/4;
+
+    //
+    for (i = 1; i < dim-1; i++){
+        iip = (i+1)*dim;
+        iim = (i-1)*dim;
+        im = i*dim;
+        x = iim+1;
+        y = im+1;
+        z = iip+1;
+        col2 = src[iim].red;
+        col3 = src[x].red;
+    	col2 += src[im].red;
+    	col3 += src[y].red;
+    	col2 += src[iip].red;
+    	col3 += src[z].red;
+        sum = col2 + col3;
+    	dst[im].red = sum/6;
+
+        for (j = 1; j < dim-1; j++){
+            col1 = col2;
+            col2 = col3;
+            col3 = src[x+j].red;
+        	col3 += src[y+j].red;
+        	col3 += src[z+j].red;
+        	sum = col1 + col2 + col3;
+        	dst[im+j].red = sum/9;
+        	j++;
+			col1 = col2;
+            col2 = col3;
+            col3 = src[x+j].red;
+        	col3 += src[y+j].red;
+        	col3 += src[z+j].red;
+        	sum = col1 + col2 + col3;
+        	dst[im+j].red = sum/9;
+        }
+        col1 = col2;
+        col2 = col3;
+        sum = col1 + col2;
+    	dst[im + dim-1].red = sum/6;
+    }
+    //
+    k = (dim-1)*dim;
+    p =(dim-2)*dim;
+    x=p+1;
+    y=k+1;
+    col2 = src[p].red;
+    col3 = src[x].red;
+    col2 += src[k].red;
+    col3 += src[y].red;
+    sum = col2 + col3;
+    dst[k].red = sum/4;
+
+    for (j = 1; j < dim-1; j++){
+        col1 = col2;
+        col2 = col3;
+        col3 = src[x+j].red;
+        col3 += src[y+j].red;
+        sum = col1 + col2 + col3;
+        dst[k+j].red = sum/6;
+        j++;
+        col1 = col2;
+        col2 = col3;
+        col3 = src[x+j].red;
+        col3 += src[y+j].red;
+        sum = col1 + col2 + col3;
+        dst[k+j].red = sum/6;
+    }
+    col1 = col2;
+    col2 = col3;
+    sum = col1 + col2;
+    dst[k+dim-1].red = sum/4;
+
+    //green
+    col2 = src[0].green;
+    col3 = src[1].green;
+    col2 += src[dim].green;
+    col3 += src[dim+1].green;
+    sum = col2 + col3;
+    dst[0].green = sum/4;
+    x=dim+1;
+    for (j = 1; j < dim-1; j++){
+        col1 = col2;
+        col2 = col3;
+        col3 = src[j+1].green;
+        col3 += src[x+j].green;
+        sum = col1 + col2 + col3;
+        dst[j].green = sum/6;
+        j++;
+        col1 = col2;
+        col2 = col3;
+        col3 = src[j+1].green;
+        col3 += src[x+j].green;
+        sum = col1 + col2 + col3;
+        dst[j].green = sum/6;
+    }
+    col1 = col2;
+    col2 = col3;
+    sum = col1 + col2;
+    dst[dim-1].green = sum/4;
+
+    //
+    for (i = 1; i < dim-1; i++){
+        iip = (i+1)*dim;
+        iim = (i-1)*dim;
+        im = i*dim;
+        x = iim+1;
+        y = im+1;
+        z = iip+1;
+        col2 = src[iim].green;
+        col3 = src[x].green;
+    	col2 += src[im].green;
+    	col3 += src[y].green;
+    	col2 += src[iip].green;
+    	col3 += src[z].green;
+        sum = col2 + col3;
+    	dst[im].green = sum/6;
+
+        for (j = 1; j < dim-1; j++){
+            col1 = col2;
+            col2 = col3;
+            col3 = src[x+j].green;
+        	col3 += src[y+j].green;
+        	col3 += src[z+j].green;
+        	sum = col1 + col2 + col3;
+        	dst[im+j].green = sum/9;
+        	j++;
+        	col1 = col2;
+            col2 = col3;
+            col3 = src[x+j].green;
+        	col3 += src[y+j].green;
+        	col3 += src[z+j].green;
+        	sum = col1 + col2 + col3;
+        	dst[im+j].green = sum/9;
+        }
+        col1 = col2;
+        col2 = col3;
+        sum = col1 + col2;
+    	dst[im + dim-1].green = sum/6;
+    }
+    //
+    k = (dim-1)*dim;
+    p =(dim-2)*dim;
+    x=p+1;
+    y=k+1;
+    col2 = src[p].green;
+    col3 = src[x].green;
+    col2 += src[k].green;
+    col3 += src[y].green;
+    sum = col2 + col3;
+    dst[k].green = sum/4;
+
+    for (j = 1; j < dim-1; j++){
+        col1 = col2;
+        col2 = col3;
+        col3 = src[x+j].green;
+        col3 += src[y+j].green;
+        sum = col1 + col2 + col3;
+        dst[k+j].green = sum/6;
+        j++;
+        col1 = col2;
+        col2 = col3;
+        col3 = src[x+j].green;
+        col3 += src[y+j].green;
+        sum = col1 + col2 + col3;
+        dst[k+j].green = sum/6;
+    }
+    col1 = col2;
+    col2 = col3;
+    sum = col1 + col2;
+    dst[k+dim-1].green = sum/4;
+    //blue
+        col2 = src[0].blue;
+    col3 = src[1].blue;
+    col2 += src[dim].blue;
+    col3 += src[dim+1].blue;
+    sum = col2 + col3;
+    dst[0].blue = sum/4;
+    x=dim+1;
+    for (j = 1; j < dim-1; j++){
+        col1 = col2;
+        col2 = col3;
+        col3 = src[j+1].blue;
+        col3 += src[x+j].blue;
+        sum = col1 + col2 + col3;
+        dst[j].blue = sum/6;
+        j++;
+        col1 = col2;
+        col2 = col3;
+        col3 = src[j+1].blue;
+        col3 += src[x+j].blue;
+        sum = col1 + col2 + col3;
+        dst[j].blue = sum/6;
+    }
+    col1 = col2;
+    col2 = col3;
+    sum = col1 + col2;
+    dst[dim-1].blue = sum/4;
+
+    //
+    for (i = 1; i < dim-1; i++){
+        iip = (i+1)*dim;
+        iim = (i-1)*dim;
+        im = i*dim;
+        x = iim+1;
+        y = im+1;
+        z = iip+1;
+        col2 = src[iim].blue;
+        col3 = src[x].blue;
+    	col2 += src[im].blue;
+    	col3 += src[y].blue;
+    	col2 += src[iip].blue;
+    	col3 += src[z].blue;
+        sum = col2 + col3;
+    	dst[im].blue = sum/6;
+
+        for (j = 1; j < dim-1; j++){
+            col1 = col2;
+            col2 = col3;
+            col3 = src[x+j].blue;
+        	col3 += src[y+j].blue;
+        	col3 += src[z+j].blue;
+        	sum = col1 + col2 + col3;
+        	dst[im+j].blue = sum/9;
+        	j++;
+        	col1 = col2;
+            col2 = col3;
+            col3 = src[x+j].blue;
+        	col3 += src[y+j].blue;
+        	col3 += src[z+j].blue;
+        	sum = col1 + col2 + col3;
+        	dst[im+j].blue = sum/9;
+        }
+        col1 = col2;
+        col2 = col3;
+        sum = col1 + col2;
+    	dst[im + dim-1].blue = sum/6;
+    }
+    //
+    k = (dim-1)*dim;
+    p =(dim-2)*dim;
+    x=p+1;
+    y=k+1;
+    col2 = src[p].blue;
+    col3 = src[x].blue;
+    col2 += src[k].blue;
+    col3 += src[y].blue;
+    sum = col2 + col3;
+    dst[k].blue = sum/4;
+
+    for (j = 1; j < dim-1; j++){
+        col1 = col2;
+        col2 = col3;
+        col3 = src[x+j].blue;
+        col3 += src[y+j].blue;
+        sum = col1 + col2 + col3;
+        dst[k+j].blue = sum/6;
+        j++;
+        col1 = col2;
+        col2 = col3;
+        col3 = src[x+j].blue;
+        col3 += src[y+j].blue;
+        sum = col1 + col2 + col3;
+        dst[k+j].blue = sum/6;
+    }
+    col1 = col2;
+    col2 = col3;
+    sum = col1 + col2;
+    dst[k+dim-1].blue = sum/4;
+}
 /*
  * smooth - Your current working version of smooth.
  * IMPORTANT: This is the version you will be graded on
@@ -468,7 +771,7 @@ void smooth2(int dim, pixel *src, pixel *dst)
 char smooth_descr[] = "smooth: Current working version";
 void smooth(int dim, pixel *src, pixel *dst)
 {
-    smooth2(dim, src, dst);
+    smooth3(dim, src, dst);
 }
 
 
@@ -486,4 +789,5 @@ void register_smooth_functions() {
     /* ... Register additional test functions here */
     add_smooth_function(&smooth1, smooth1_descr);
     add_smooth_function(&smooth2, smooth2_descr);
+    add_smooth_function(&smooth3, smooth3_descr);
 }
