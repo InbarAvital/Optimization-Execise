@@ -11,7 +11,7 @@
  * Please fill in the following team struct
  */
         team_t team = {
-        "foreskins",              /* Team name */
+        "alpha bete gamma",              /* Team name */
 
         "Inbar Avital",     /* First member full name */
         "inbaravital4@gmail.com",  /* First member email address */
